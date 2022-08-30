@@ -1,40 +1,36 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./styles.css";
 
 //useInput을 사용하면 다른 함수에서 이벤트를 처리할 수 있음
-const useInput = (initialValue, validator) => {
-  const [value, setValue] = useState(initialValue);
-  const onChange = (event) => {
-    let willUpdate = true;
-    if (typeof validator === "function") {
-      willUpdate = validator(value);
-    }
-    if (willUpdate) {
-      setValue(event.target.value);
-    } else {
-      setValue(event.target.value.slice(0, -2));
-      alert("재입력하세요");
-    }
-  };
-  return { value, onChange };
-};
+// const useInput = (initialValue, validator) => {
+//   const [value, setValue] = useState(initialValue);
+//   const onChange = (event) => {
+//     let willUpdate = true;
+//     if (typeof validator === "function") {
+//       willUpdate = validator(value);
+//     }
+//     if (willUpdate) {
+//       setValue(event.target.value);
+//     } else {
+//       setValue(event.target.value.slice(0, -2));
+//       alert("재입력하세요");
+//     }
+//   };
+//   return { value, onChange };
+// };
 
 export default function App() {
   //Hooks가 생기기전까지는 state를 함수형 컴포넌트에서 사용할 수 없었음(클래스형 컴포넌트에서만 가능)
-  const maxLen = (value) => value.length <= 10;
-  const name = useInput("Mr.", maxLen);
-  const [item, setItem] = useState(1);
-  const increment = () => setItem(item + 1);
-  const decrement = () => setItem(item - 1);
-  console.log("Hi")
+  const sayHello = () => console.log("hello");
+  const [number,setNumber]=useState(0);
+  const [aNumber,setAnumber]=useState(0);
+  
+  useEffect(sayHello,[number]);
   return (
     <div className="App">
-      <h1>Hello {item}</h1>
-      <h2>Start editing to see some magic happen!</h2>
-      <button onClick={increment}>Increment</button>
-      <button onClick={decrement}>Decrement</button>
-      <input placeholder="Name" value={name.value} onChange={name.onChange} />
-      <input placeholder="Name" {...name} /> {/*  위 코드와 동일 */}
+      <div>Hi</div>
+      <button onClick={()=>setNumber(number+1)}>{number}</button>
+      <button onClick={()=>setAnumber(aNumber+1)}>{aNumber}</button>
     </div>
   );
 }
