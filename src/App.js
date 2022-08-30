@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./styles.css";
 
 //useInput을 사용하면 다른 함수에서 이벤트를 처리할 수 있음
@@ -51,13 +51,34 @@ const useTitle = (initialTitle) => {
   return setTitle;
 };
 
+const useClick = (onClick) => {
+  if (typeof onClick !== "function") {
+    return;
+  }
+  const element = useRef();
+  useEffect(() => {
+    if (element.current) {
+      element.current.addEventListener("click", onClick);
+    }
+    //useEffect에서 함수를 리턴한다면 그 useEffect를 반환받은 함수는 componentWillUnMount일때 호출됨
+    return () => {
+      if (element.current) {
+        element.current.removeEventListener("click", onClick);
+      }
+    };
+  }, []);
+  return element;
+};
+
 export default function App() {
   //Hooks가 생기기전까지는 state를 함수형 컴포넌트에서 사용할 수 없었음(클래스형 컴포넌트에서만 가능)
-  const titleUpdater = useTitle("Loading...");
-  setTimeout(() => titleUpdater("Home"), 5000);
+  //reference는 기본적으로 우리의 컴포넌트의 어떤 부분을 선택할 수 있는 방법(document.getElementById와 같이)
+  //리액트에 있는 모든 컴포넌트는 reference element를 가지고 있음, useRef()로 html의 태그를 선택할 수 있음
+  const sayHello = () => console.log("say hello");
+  const title = useClick(sayHello);
   return (
     <div className="App">
-      <div>Hi</div>
+      <h1 ref={title}>Hi</h1>
     </div>
   );
 }
