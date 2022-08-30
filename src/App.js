@@ -19,7 +19,30 @@ import "./styles.css";
 //   return { value, onChange };
 // };
 
+const content=[
+    {
+        tab:"Section 1",
+        content:"I'm the content of the Section 1"
+    },
+    {
+        tab:"Section 2",
+        content:"I'm the content of the Section 2"
+    },
+]
+
+const useTabs=(initialTab,allTabs)=>{
+    if(!allTabs || !Array.isArray(allTabs)){
+        return;
+    }
+    const [currentIndex,setCurrentIndex]=useState(initialTab);
+    return{
+        currentItem:allTabs[currentIndex],
+        changeItem:setCurrentIndex
+    }
+}
+
 export default function App() {
+    const {currentItem,changeItem}=useTabs(0,content);
   //Hooks가 생기기전까지는 state를 함수형 컴포넌트에서 사용할 수 없었음(클래스형 컴포넌트에서만 가능)
   const sayHello = () => console.log("hello");
   const [number,setNumber]=useState(0);
@@ -31,6 +54,7 @@ export default function App() {
       <div>Hi</div>
       <button onClick={()=>setNumber(number+1)}>{number}</button>
       <button onClick={()=>setAnumber(aNumber+1)}>{aNumber}</button>
+
     </div>
   );
 }
