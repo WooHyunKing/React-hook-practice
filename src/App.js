@@ -101,16 +101,36 @@ const usePreventLeave = () => {
   return { enablePrevent, disablePrevent };
 };
 
+const useBeforeLeave = (onBefore) => {
+  if (typeof onBefore !== "function") {
+    return;
+  }
+
+  const handle = (event) => {
+    const { clientY } = event;
+    if (clientY <= 0) {
+      onBefore();
+    }
+  };
+  useEffect(() => {
+    document.addEventListener("mouseleave", handle);
+
+    return () => {
+      document.removeEventListener("mouseleave", handle);
+    };
+  }, []);
+};
+
 export default function App() {
   //Hooks가 생기기전까지는 state를 함수형 컴포넌트에서 사용할 수 없었음(클래스형 컴포넌트에서만 가능)
   //reference는 기본적으로 우리의 컴포넌트의 어떤 부분을 선택할 수 있는 방법(document.getElementById와 같이)
   //리액트에 있는 모든 컴포넌트는 reference element를 가지고 있음, useRef()로 html의 태그를 선택할 수 있음
 
-  const { enablePrevent, disablePrevent } = usePreventLeave();
+  const begForLife = () => console.log("Plz don't leave");
+  useBeforeLeave(begForLife);
   return (
     <div className="App">
-      <button onClick={enablePrevent}>Protect</button>
-      <button onClick={disablePrevent}>Unprotect</button>
+      <h1>Hello</h1>
     </div>
   );
 }
