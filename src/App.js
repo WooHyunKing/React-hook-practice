@@ -80,7 +80,7 @@ const useConfirm = (message, onConfirm, onCancel) => {
   }
 
   const confirmAction = () => {
-    if (confirm(message)) {
+    if (window.confirm(message)) {
       onConfirm();
     } else {
       onCancel();
@@ -90,23 +90,27 @@ const useConfirm = (message, onConfirm, onCancel) => {
   return confirmAction;
 };
 
+const usePreventLeave = () => {
+  const listener = (event) => {
+    event.preventDefault();
+    event.returnValue = "";
+  };
+  const enablePrevent = () => window.addEventListener("beforeunload", listener);
+  const disablePrevent = () =>
+    window.removeEventListener("beforeunload", listener);
+  return { enablePrevent, disablePrevent };
+};
+
 export default function App() {
   //Hooks가 생기기전까지는 state를 함수형 컴포넌트에서 사용할 수 없었음(클래스형 컴포넌트에서만 가능)
   //reference는 기본적으로 우리의 컴포넌트의 어떤 부분을 선택할 수 있는 방법(document.getElementById와 같이)
   //리액트에 있는 모든 컴포넌트는 reference element를 가지고 있음, useRef()로 html의 태그를 선택할 수 있음
-  const deleteWorld = () => {
-    console.log("Deleting the world...");
-  };
 
-  const abort = () => {
-    console.log("Aborted");
-  };
-
-  const confirmDelete = useConfirm("Will you delete?", deleteWorld, abort);
+  const { enablePrevent, disablePrevent } = usePreventLeave();
   return (
     <div className="App">
-      <h1>Hi</h1>
-      <button onClick={confirmDelete}>Delete the world</button>
+      <button onClick={enablePrevent}>Protect</button>
+      <button onClick={disablePrevent}>Unprotect</button>
     </div>
   );
 }
